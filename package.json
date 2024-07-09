@@ -3,7 +3,7 @@
   "module": "src/index.ts",
   "type": "module",
   "bin": "dist/index.js",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Quickly create a local development environment for your TypeScript project.",
   "author": "vaaski <admin@vaa.ski>",
   "license": "MIT",
