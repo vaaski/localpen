@@ -7,6 +7,10 @@
   "description": "Quickly create a local development environment for your TypeScript project.",
   "author": "vaaski <admin@vaa.ski>",
   "license": "MIT",
+  "files": [
+    "dist",
+    "templates"
+  ],
   "scripts": {
     "start": "bun run src/index.ts",
     "dev": "bun run --watch src/index.ts",
@@ -22,7 +26,6 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "execa": "^9.3.0",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
     "prompts": "^2.4.2",
