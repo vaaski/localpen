@@ -46,6 +46,12 @@ To use a template, run `localpen` with the `-t` flag:
 bunx localpen -t ts
 ```
 
+### Deletion behavior
+
+By default, Localpen will prompt you to delete the temporary directory after the evaluation is complete.
+
+This prompt can be skipped by passing the `--keep` (`-k`) or the `--delete` (`-d`) flag.
+
 ### Todo
 
 - [ ] ensure all the vite templates work
