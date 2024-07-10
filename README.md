@@ -51,5 +51,6 @@ bunx localpen -t ts
 - [ ] ensure all the vite templates work
   - [ ] maybe use the "dev" script from the template directly in case it differs from "vite"
 - [ ] add an interactive mode that allows you to choose a template
+- [ ] play around with [autoimport](https://bun.sh/docs/runtime/autoimport)
 
 [bun]: https://bun.sh
