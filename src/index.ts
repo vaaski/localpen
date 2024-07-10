@@ -1,4 +1,4 @@
-import { black, blue, bold, gray, red } from "kolorist"
+import { black, blue, bold, gray, red, white } from "kolorist"
 import minimist from "minimist"
 import { cp, rm } from "node:fs/promises"
 import { dirname, join } from "node:path"
@@ -71,11 +71,26 @@ console.log(gray("Running project..."))
 const runInstance = spawner(template.entry)
 
 console.clear()
-console.log(bold(blue("Close the VS Code window/tab to exit")))
+console.log(bold(blue(`Close the VS Code tab or press ${white("q")} to exit`)))
 console.log(gray(`${separator()}\n`))
+
+process.stdin.setRawMode(true)
+process.stdin.resume()
+process.stdin.on("data", async (key) => {
+  switch (key.toString()) {
+    case "q":
+    case "\u0003": // ctrl-c
+      codeInstance.kill()
+      break
+    default:
+      console.log(key.toString())
+      break
+  }
+})
 
 await codeInstance.exited
 runInstance.kill()
+process.stdin.pause()
 
 console.clear()
 
