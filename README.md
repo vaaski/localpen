@@ -38,6 +38,7 @@ To start, there are two templates available:
 
 - `typescript`/`ts`
 - `javascript`/`js`
+- `vite`/`v`
 
 To use a template, run `localpen` with the `-t` flag:
 
@@ -45,6 +46,10 @@ To use a template, run `localpen` with the `-t` flag:
 bunx localpen -t ts
 ```
 
-All [vite](https://vitejs.dev) templates are planned to be added soon.
+### Todo
+
+- [ ] ensure all the vite templates work
+  - [ ] maybe use the "dev" script from the template directly in case it differs from "vite"
+- [ ] add an interactive mode that allows you to choose a template
 
 [bun]: https://bun.sh
