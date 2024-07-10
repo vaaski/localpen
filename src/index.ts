@@ -1,6 +1,6 @@
-import { black, blue, bold, gray, red, white } from "kolorist"
+import { black, blue, bold, gray, magenta, red, white } from "kolorist"
 import minimist from "minimist"
-import { cp, rm } from "node:fs/promises"
+import { cp, mkdir, rm } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import temporaryPath from "temporary-path"
@@ -52,45 +52,81 @@ if (!template) {
 }
 
 const tempFolder = temporaryPath()
-const templatePath = join(__dirname, "../templates", template.folder)
-
-await cp(templatePath, tempFolder, { recursive: true })
 
 const spawner = spawnerInstance({
   cwd: tempFolder,
   stdio: ["inherit", "inherit", "inherit"],
 })
 
-console.log(gray("Installing dependencies..."))
-await spawner(["bun", "install", "--frozen-lockfile"]).exited
+if ("vite" in template) {
+  console.log(gray(`Launching ${magenta("create-vite")}...`))
 
-console.log(gray("Opening project in VS Code..."))
-const codeInstance = spawner(["code", "-r", "-w", template.editorEntry])
+  const projectPath = join(tempFolder, "localpen-vite")
+  await mkdir(tempFolder, { recursive: true })
 
-console.log(gray("Running project..."))
-const runInstance = spawner(template.entry)
-
-console.clear()
-console.log(bold(blue(`Close the VS Code tab or press ${white("q")} to exit`)))
-console.log(gray(`${separator()}\n`))
-
-process.stdin.setRawMode(true)
-process.stdin.resume()
-process.stdin.on("data", async (key) => {
-  switch (key.toString()) {
-    case "q":
-    case "\u0003": // ctrl-c
-      codeInstance.kill()
-      break
-    default:
-      console.log(key.toString())
-      break
+  const createVite = spawner(["bunx", "create-vite", "localpen-vite"])
+  const result = await createVite.exited
+  if (result !== 0) {
+    console.log(red(bold("Failed to create Vite project")))
+    process.exit(1)
   }
-})
 
-await codeInstance.exited
-runInstance.kill()
-process.stdin.pause()
+  console.log(gray("Installing dependencies..."))
+  await spawner(["bun", "install"], { cwd: projectPath }).exited
+
+  console.log(gray("Opening project in VS Code..."))
+  const codeInstance = spawner(["code", "-n", "-w", projectPath])
+
+  console.clear()
+  console.log(bold(blue(`Close the VS Code tab or press ${white("q + enter")} to exit`)))
+  console.log(gray(`${separator()}\n`))
+
+  console.log(gray("Running project..."))
+  const runInstance = spawner(["bunx", "vite", "--open", "--clearScreen", "false"], {
+    cwd: projectPath,
+  })
+
+  await Promise.any([codeInstance.exited, runInstance.exited])
+
+  runInstance.kill()
+  codeInstance.kill()
+  await Promise.all([codeInstance.exited, runInstance.exited])
+} else {
+  const templatePath = join(__dirname, "../templates", template.folder)
+
+  await cp(templatePath, tempFolder, { recursive: true })
+
+  console.log(gray("Installing dependencies..."))
+  await spawner(["bun", "install", "--frozen-lockfile"]).exited
+
+  console.log(gray("Opening project in VS Code..."))
+  const codeInstance = spawner(["code", "-r", "-w", template.editorEntry])
+
+  console.log(gray("Running project..."))
+  const runInstance = spawner(template.entry)
+
+  process.stdin.setRawMode(true)
+  process.stdin.resume()
+  process.stdin.on("data", async (key) => {
+    switch (key.toString()) {
+      case "q":
+      case "\u0003": // ctrl-c
+        codeInstance.kill()
+        break
+      default:
+        console.log(key.toString())
+        break
+    }
+  })
+
+  console.clear()
+  console.log(bold(blue(`Close the VS Code tab or press ${white("q")} to exit`)))
+  console.log(gray(`${separator()}\n`))
+
+  await codeInstance.exited
+  runInstance.kill()
+  process.stdin.pause()
+}
 
 console.clear()
 

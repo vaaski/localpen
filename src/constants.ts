@@ -1,4 +1,4 @@
-import { blue, bold, gray, yellow } from "kolorist"
+import { blue, bold, gray, magenta, yellow } from "kolorist"
 
 type Template = {
   name: string
@@ -8,8 +8,9 @@ type Template = {
   entry: string[]
   alias?: string
 }
+type TemplateVite = Omit<Template, "folder" | "entry" | "editorEntry"> & { vite: true }
 
-export const templates: Template[] = [
+export const templates: (Template | TemplateVite)[] = [
   {
     name: "typescript",
     alias: "ts",
@@ -25,6 +26,12 @@ export const templates: Template[] = [
     color: yellow,
     editorEntry: "index.js",
     entry: ["bun", "run", "--watch", "index.js"],
+  },
+  {
+    name: "vite",
+    alias: "v",
+    color: magenta,
+    vite: true,
   },
 ]
 
