@@ -15,12 +15,18 @@ const argv = minimist<{
   template?: string
   help?: boolean
   keep?: boolean
+  delete?: boolean
 }>(process.argv.slice(2), {
-  default: { help: false },
+  default: {
+    help: false,
+    delete: false,
+    keep: false,
+  },
   alias: {
     h: "help",
     t: "template",
     k: "keep",
+    d: "delete",
   },
   string: ["_"],
 })
@@ -28,6 +34,11 @@ const argv = minimist<{
 if (argv.help || !argv.template) {
   console.log(helpMessage)
   process.exit(0)
+}
+
+if (argv.delete && argv.keep) {
+  console.log(red(bold("Cannot use both --delete and --keep")))
+  process.exit(1)
 }
 
 const template = templates.find(
@@ -68,14 +79,19 @@ runInstance.kill()
 
 console.clear()
 
-const keepPrompt = await prompts({
-  type: "confirm",
-  name: "keep",
-  message: "Keep the project folder?",
-  initial: false,
-})
+let keep = argv.keep && !argv.delete
+if (!argv.delete && !argv.keep) {
+  const keepPrompt = await prompts({
+    type: "confirm",
+    name: "keep",
+    message: "Keep the project folder?",
+    initial: false,
+  })
 
-if (keepPrompt.keep) {
+  keep = keepPrompt.keep
+}
+
+if (keep) {
   console.log(`The folder is kept at ${tempFolder}`)
 } else {
   await rm(tempFolder, { recursive: true, force: true })

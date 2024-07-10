@@ -1,4 +1,4 @@
-import { blue, yellow } from "kolorist"
+import { blue, bold, gray, yellow } from "kolorist"
 
 type Template = {
   name: string
@@ -31,9 +31,13 @@ export const templates: Template[] = [
 export const helpMessage = `
 Usage: localpen [options]
 
-Options:
-  -h, --help     Show this help message
-  -t, --template Specify a template to use
+${gray("Options:")}
+  -h, --help      ${bold("Show this help message")}
+  -t, --template  ${bold("Specify a template to use")}
+
+${gray("Post-run options, pick either or get prompted:")}
+  -k, --keep      ${bold("Keep the project folder")}
+  -d, --delete    ${bold("Delete the project folder")}
 
 Available templates:
 ${templates
