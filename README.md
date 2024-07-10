@@ -28,13 +28,19 @@ Opening in VSCode uses the `--wait` flag, so that closing the editor will tell L
   ```
 
 - Run `localpen`:
+
   ```bash
   bunx localpen
   ```
 
+- Install `localpen`:
+  ```bash
+  bun add -g localpen
+  ```
+
 ### Templates
 
-To start, there are two templates available:
+Currently, there are three templates available:
 
 - `typescript`/`ts`
 - `javascript`/`js`
@@ -43,7 +49,7 @@ To start, there are two templates available:
 To use a template, run `localpen` with the `-t` flag:
 
 ```bash
-bunx localpen -t ts
+localpen -t ts
 ```
 
 ### Deletion behavior
