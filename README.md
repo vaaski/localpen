@@ -63,6 +63,8 @@ This prompt can be skipped by passing the `--keep` (`-k`) or the `--delete` (`-d
 - [ ] ensure all the vite templates work
   - [ ] maybe use the "dev" script from the template directly in case it differs from "vite"
 - [ ] add an interactive mode that allows you to choose a template
+- [ ] include vite templates directly with the `-t` flag
+  - [ ] parse them from the `create-vite` output
 - [ ] play around with [autoimport](https://bun.sh/docs/runtime/autoimport)
 
 [bun]: https://bun.sh
