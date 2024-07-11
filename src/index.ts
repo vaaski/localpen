@@ -6,7 +6,8 @@ import { fileURLToPath } from "node:url"
 import temporaryPath from "temporary-path"
 
 import prompts from "prompts"
-import { helpMessage, templates } from "./constants"
+import { type Template, helpMessage, templates } from "./constants"
+import { templatePrompt } from "./template-prompt"
 import { separator, spawnerInstance } from "./util"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -31,7 +32,7 @@ const argv = minimist<{
   string: ["_"],
 })
 
-if (argv.help || !argv.template) {
+if (argv.help) {
   console.log(helpMessage)
   process.exit(0)
 }
@@ -41,9 +42,12 @@ if (argv.delete && argv.keep) {
   process.exit(1)
 }
 
-const template = templates.find(
-  (t) => t.name === argv.template || t.alias === argv.template,
-)
+let template: Template | undefined
+if (argv.template) {
+  template = templates.find((t) => t.name === argv.template || t.alias === argv.template)
+} else {
+  template = await templatePrompt()
+}
 
 if (!template) {
   console.log(red(bold(`Template ${black(argv.template ?? "")} not found`)))
@@ -143,7 +147,8 @@ if (!argv.delete && !argv.keep) {
 }
 
 if (keep) {
-  console.log(`The folder is kept at ${tempFolder}`)
+  console.log(gray(`The folder is kept at ${tempFolder}`))
 } else {
   await rm(tempFolder, { recursive: true, force: true })
+  console.log(gray(`Deleted ${tempFolder}`))
 }
