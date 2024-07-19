@@ -12,10 +12,11 @@
 	"scripts": {
 		"start": "bun run src/index.ts",
 		"dev": "bun run --watch src/index.ts",
+		"vite-templates": "bun run scripts/vite-templates.ts",
 		"build": "bun run scripts/build.ts",
 		"test": "bun test",
 		"format": "biome format --write src scripts *.json",
-		"prepare": "bun run build"
+		"prepare": "bun run vite-templates && bun run build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
