@@ -13,6 +13,7 @@ export type TemplateVite = Omit<
 	"folder" | "entry" | "editorEntry"
 > & {
 	vite: true
+	variant?: string
 }
 
 export type Template = TemplateBuiltin | TemplateVite
@@ -35,7 +36,7 @@ export const templates: Template[] = [
 		entry: ["bun", "run", "--watch", "index.js"],
 	},
 	{
-		name: "vite",
+		name: "create-vite",
 		alias: "v",
 		color: magenta,
 		vite: true,

@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url"
 import prompts from "prompts"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const VITE_TEMPLATES_FOLDER = join(__dirname, "../templates/vite")
+export const VITE_TEMPLATES_FOLDER = join(__dirname, "../templates/vite")
 
 const COLOR_STARTS_WITH = Object.entries({
 	vanilla: colors.yellow,
@@ -28,7 +28,9 @@ export type ViteFlavor = {
 export type ViteTemplateMap = { [name: string]: ViteFlavor }
 export type ViteTemplateEntry = [string, ViteFlavor]
 
-export const listTemplates = async (): Promise<ViteTemplateEntry[]> => {
+export const getViteTemplateVariantsColors = async (): Promise<
+	ViteTemplateEntry[]
+> => {
 	const contents = await readdir(VITE_TEMPLATES_FOLDER)
 	const map: ViteTemplateMap = {}
 
@@ -55,7 +57,7 @@ export const listTemplates = async (): Promise<ViteTemplateEntry[]> => {
 const renameFiles = {
 	_gitignore: ".gitignore",
 }
-const copyViteTemplate = async (
+export const copyViteTemplate = async (
 	templateFolder: string,
 	outputFolder: string,
 ) => {
@@ -72,7 +74,7 @@ const copyViteTemplate = async (
 }
 
 export const createVite = async (folder: string) => {
-	const viteTemplates = await listTemplates()
+	const viteTemplates = await getViteTemplateVariantsColors()
 
 	const templatePrompt = await prompts({
 		type: "select",
@@ -85,7 +87,7 @@ export const createVite = async (folder: string) => {
 	})
 
 	const template = templatePrompt.template as ViteTemplateEntry
-	if (!template) throw new Error("No template selected")
+	if (!template) throw new Error("No template selected.")
 
 	if (template[1].variants.length > 1) {
 		const variantPrompt = await prompts({
@@ -101,7 +103,7 @@ export const createVite = async (folder: string) => {
 		})
 
 		if (variantPrompt.variant === undefined) {
-			throw new Error("No variant selected")
+			throw new Error("No variant selected.")
 		}
 
 		const templateFolder = template[0] + variantPrompt.variant

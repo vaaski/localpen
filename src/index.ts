@@ -1,13 +1,17 @@
-import { black, blue, bold, gray, red, white } from "kolorist"
+import { black, blue, bold, gray, magenta, red, white } from "kolorist"
 import minimist from "minimist"
-import { cp, mkdir, rm } from "node:fs/promises"
+import { cp, mkdir, readdir, rm } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import temporaryPath from "temporary-path"
 
 import prompts from "prompts"
 import { type Template, helpMessage, templates } from "./constants"
-import { createVite } from "./create-vite"
+import {
+	VITE_TEMPLATES_FOLDER,
+	copyViteTemplate,
+	createVite,
+} from "./create-vite"
 import { separator, spawnerInstance } from "./util"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -50,6 +54,17 @@ if (argv.template) {
 			t.alias?.toLowerCase() === argv.template?.toLowerCase()
 		)
 	})
+	if (!template) {
+		const viteTemplates = await readdir(VITE_TEMPLATES_FOLDER)
+		if (viteTemplates.includes(argv.template)) {
+			template = {
+				vite: true,
+				name: "vite",
+				variant: argv.template,
+				color: magenta,
+			}
+		}
+	}
 } else {
 	const templatePrompt = await prompts({
 		type: "select",
@@ -64,7 +79,7 @@ if (argv.template) {
 	template = templatePrompt.template as Template
 
 	if (!template) {
-		console.log(gray("Aborted."))
+		console.log(gray("No template selected."))
 		process.exit(0)
 	}
 }
@@ -86,13 +101,17 @@ if ("vite" in template) {
 	const projectPath = join(tempFolder, "localpen-vite")
 	await mkdir(tempFolder, { recursive: true })
 
-	try {
-		await createVite(projectPath)
-	} catch (error) {
-		if (error instanceof Error) {
-			console.log(red(bold(error.message)))
+	if (template.variant) {
+		await copyViteTemplate(template.variant, projectPath)
+	} else {
+		try {
+			await createVite(projectPath)
+		} catch (error) {
+			if (error instanceof Error) {
+				console.log(gray(error.message))
+			}
+			process.exit(0)
 		}
-		process.exit(1)
 	}
 
 	console.log(gray("Installing dependencies..."))
@@ -170,7 +189,7 @@ if (!argv.delete && !argv.keep) {
 		initial: false,
 	})
 
-	keep = keepPrompt.keep
+	keep = keepPrompt.keep as boolean
 }
 
 if (keep) {
