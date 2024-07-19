@@ -6,6 +6,7 @@
 	"version": "0.2.0",
 	"description": "Quickly create a local development environment for your TypeScript project.",
 	"author": "vaaski <admin@vaa.ski>",
+	"repository": "https://github.com/vaaski/localpen",
 	"license": "MIT",
 	"files": ["dist", "templates"],
 	"scripts": {
