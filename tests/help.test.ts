@@ -6,6 +6,7 @@ Usage: localpen [options]
 Options:
   -h, --help      Show this help message
   -t, --template  Specify a template to use
+  -n, --no-code   Don't open the project in VS Code
 
 Deletion options, pick either or get prompted:
   -k, --keep      Keep the project folder

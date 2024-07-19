@@ -64,6 +64,7 @@ Usage: localpen [options]
 ${gray("Options:")}
   -h, --help      ${bold("Show this help message")}
   -t, --template  ${bold("Specify a template to use")}
+  -n, --no-code   ${bold("Don't open the project in VS Code")}
 
 ${gray("Deletion options, pick either or get prompted:")}
   -k, --keep      ${bold("Keep the project folder")}
