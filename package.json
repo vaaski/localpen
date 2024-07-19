@@ -7,16 +7,13 @@
 	"description": "Quickly create a local development environment for your TypeScript project.",
 	"author": "vaaski <admin@vaa.ski>",
 	"license": "MIT",
-	"files": [
-		"dist",
-		"templates"
-	],
+	"files": ["dist", "templates"],
 	"scripts": {
 		"start": "bun run src/index.ts",
 		"dev": "bun run --watch src/index.ts",
 		"build": "bun run scripts/build.ts",
 		"test": "echo no tests yet",
-		"format": "biome format --write src scripts",
+		"format": "biome format --write src scripts *.json",
 		"prepare": "bun run build"
 	},
 	"devDependencies": {
