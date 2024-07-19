@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test"
-import { reset } from "kolorist"
+import { removeColors } from "./_shared"
 
 const helpOutput = `
 Usage: localpen [options]
@@ -34,7 +34,7 @@ test("print help message", async () => {
 
 	await child.exited
 
-	expect(reset(text)).toBe(helpOutput)
+	expect(removeColors(text)).toBe(helpOutput)
 })
 
 test("print help message on wrong template", async () => {
@@ -43,6 +43,6 @@ test("print help message on wrong template", async () => {
 
 	await child.exited
 
-	expect(reset(text)).toContain(helpOutput)
-	expect(reset(text)).toContain(" not found")
+	expect(removeColors(text)).toContain(helpOutput)
+	expect(removeColors(text)).toContain(" not found")
 })
