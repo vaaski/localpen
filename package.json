@@ -3,11 +3,14 @@
 	"module": "src/index.ts",
 	"type": "module",
 	"bin": "dist/index.js",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Quickly create a local development environment for your TypeScript project.",
 	"author": "vaaski <admin@vaa.ski>",
 	"license": "MIT",
-	"files": ["dist", "templates"],
+	"files": [
+		"dist",
+		"templates"
+	],
 	"scripts": {
 		"start": "bun run src/index.ts",
 		"dev": "bun run --watch src/index.ts",
