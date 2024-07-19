@@ -1,42 +1,45 @@
 import { blue, bold, gray, magenta, yellow } from "kolorist"
 
 export type TemplateBuiltin = {
-  name: string
-  folder: string
-  color: (str: string | number) => string
-  editorEntry: string
-  entry: string[]
-  alias?: string
+	name: string
+	folder: string
+	color: (str: string | number) => string
+	editorEntry: string
+	entry: string[]
+	alias?: string
 }
-export type TemplateVite = Omit<TemplateBuiltin, "folder" | "entry" | "editorEntry"> & {
-  vite: true
+export type TemplateVite = Omit<
+	TemplateBuiltin,
+	"folder" | "entry" | "editorEntry"
+> & {
+	vite: true
 }
 
 export type Template = TemplateBuiltin | TemplateVite
 
 export const templates: Template[] = [
-  {
-    name: "typescript",
-    alias: "ts",
-    folder: "typescript",
-    color: blue,
-    editorEntry: "index.ts",
-    entry: ["bun", "run", "--watch", "index.ts"],
-  },
-  {
-    name: "javascript",
-    alias: "js",
-    folder: "javascript",
-    color: yellow,
-    editorEntry: "index.js",
-    entry: ["bun", "run", "--watch", "index.js"],
-  },
-  {
-    name: "vite",
-    alias: "v",
-    color: magenta,
-    vite: true,
-  },
+	{
+		name: "TypeScript",
+		alias: "ts",
+		folder: "typescript",
+		color: blue,
+		editorEntry: "index.ts",
+		entry: ["bun", "run", "--watch", "index.ts"],
+	},
+	{
+		name: "JavaScript",
+		alias: "js",
+		folder: "javascript",
+		color: yellow,
+		editorEntry: "index.js",
+		entry: ["bun", "run", "--watch", "index.js"],
+	},
+	{
+		name: "vite",
+		alias: "v",
+		color: magenta,
+		vite: true,
+	},
 ]
 
 export const helpMessage = `
@@ -52,5 +55,5 @@ ${gray("Deletion options, pick either or get prompted:")}
 
 Available templates:
 ${templates
-  .map((t) => `  - ${t.color(t.name)}${t.alias ? `/${t.color(t.alias)}` : ""}`)
-  .join("\n")}`
+	.map((t) => `  - ${t.color(t.name)}${t.alias ? `/${t.color(t.alias)}` : ""}`)
+	.join("\n")}`
