@@ -184,10 +184,13 @@ if ("vite" in template) {
 
 	const runInstance = spawner(template.entry)
 
-	process.stdin.setRawMode(true)
-	process.stdin.resume()
+	if (process.stdin.isTTY) {
+		process.stdin.setRawMode(true)
+		process.stdin.resume()
+	}
 	process.stdin.on("data", async (key) => {
 		switch (key.toString()) {
+			case "q\n":
 			case "q":
 			case "\u0003": // ctrl-c
 				codeInstance?.kill()

@@ -42,6 +42,6 @@ test("print help message on wrong template", async () => {
 
 	await child.exited
 
-	expect(text.includes(helpOutput)).toBe(true)
-	expect(text.includes(" not found")).toBe(true)
+	expect(text).toContain(helpOutput)
+	expect(text).toContain(" not found")
 })
