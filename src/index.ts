@@ -5,6 +5,7 @@ import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import temporaryPath from "temporary-path"
 
+import type { Subprocess } from "bun"
 import prompts from "prompts"
 import { type Template, helpMessage, templates } from "./constants"
 import {
@@ -21,17 +22,20 @@ const argv = minimist<{
 	help?: boolean
 	keep?: boolean
 	delete?: boolean
+	code?: boolean
 }>(process.argv.slice(2), {
 	default: {
 		help: false,
 		delete: false,
 		keep: false,
+		code: true,
 	},
 	alias: {
 		h: "help",
 		t: "template",
 		k: "keep",
 		d: "delete",
+		// n: "no-code",
 	},
 	string: ["_"],
 })
@@ -117,13 +121,23 @@ if ("vite" in template) {
 	console.log(gray("Installing dependencies..."))
 	await spawner(["bun", "install"], { cwd: projectPath }).exited
 
-	console.log(gray("Opening project in VS Code..."))
-	const codeInstance = spawner(["code", "-n", "-w", projectPath])
+	let codeInstance: Subprocess | undefined
+	if (argv.code) {
+		console.log(gray("Opening project in VS Code..."))
+		codeInstance = spawner(["code", "-n", "-w", projectPath])
 
-	console.clear()
-	console.log(
-		bold(blue(`Close the VS Code tab or press ${white("q + enter")} to exit`)),
-	)
+		console.log(
+			bold(
+				blue(`Close the VS Code tab or press ${white("q + enter")} to exit`),
+			),
+		)
+	} else {
+		console.log(gray("Skipping VS Code..."))
+		console.log(gray("Project is running at:"))
+		console.log(projectPath)
+
+		console.log(bold(blue(`Press ${white("q + enter")} to exit`)))
+	}
 	console.log(gray(`${separator()}\n`))
 
 	console.log(gray("Running project..."))
@@ -134,11 +148,15 @@ if ("vite" in template) {
 		},
 	)
 
-	await Promise.any([codeInstance.exited, runInstance.exited])
+	if (codeInstance) {
+		await Promise.any([codeInstance.exited, runInstance.exited])
+	} else {
+		await runInstance.exited
+	}
 
 	runInstance.kill()
-	codeInstance.kill()
-	await Promise.all([codeInstance.exited, runInstance.exited])
+	codeInstance?.kill()
+	await Promise.all([codeInstance?.exited, runInstance.exited])
 } else {
 	const templatePath = join(__dirname, "../templates", template.folder)
 
@@ -147,10 +165,23 @@ if ("vite" in template) {
 	console.log(gray("Installing dependencies..."))
 	await spawner(["bun", "install", "--frozen-lockfile"]).exited
 
-	console.log(gray("Opening project in VS Code..."))
-	const codeInstance = spawner(["code", "-r", "-w", template.editorEntry])
+	console.clear()
 
-	console.log(gray("Running project..."))
+	let codeInstance: Subprocess | undefined
+	if (argv.code) {
+		console.log(gray("Opening project in VS Code..."))
+		codeInstance = spawner(["code", "-r", "-w", template.editorEntry])
+
+		console.log(
+			bold(blue(`Close the VS Code tab or press ${white("q")} to exit`)),
+		)
+	} else {
+		console.log(gray("Project is running at:"))
+		console.log(tempFolder)
+
+		console.log(bold(blue(`Press ${white("q")} to exit`)))
+	}
+
 	const runInstance = spawner(template.entry)
 
 	process.stdin.setRawMode(true)
@@ -159,21 +190,22 @@ if ("vite" in template) {
 		switch (key.toString()) {
 			case "q":
 			case "\u0003": // ctrl-c
-				codeInstance.kill()
+				codeInstance?.kill()
+				runInstance.kill()
 				break
 			default:
 				console.log(key.toString())
 				break
 		}
 	})
-
-	console.clear()
-	console.log(
-		bold(blue(`Close the VS Code tab or press ${white("q")} to exit`)),
-	)
 	console.log(gray(`${separator()}\n`))
 
-	await codeInstance.exited
+	if (codeInstance) {
+		await codeInstance.exited
+	} else {
+		await runInstance.exited
+	}
+
 	runInstance.kill()
 	process.stdin.pause()
 }
