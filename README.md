@@ -22,7 +22,7 @@ Opening in VSCode uses the `--wait` flag, so that closing the editor will tell L
   curl -fsSL https://bun.sh/install | bash
   ```
 
-  ```ps
+  ```bash
   # Windows
   powershell -c "irm bun.sh/install.ps1 | iex"
   ```
