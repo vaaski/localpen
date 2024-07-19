@@ -42,9 +42,12 @@ Opening in VSCode uses the `--wait` flag, so that closing the editor will tell L
 
 Currently, there are three templates available:
 
-- `typescript`/`ts`
-- `javascript`/`js`
-- `vite`/`v`
+- `TypeScript`/`ts`
+- `JavaScript`/`js`
+- `Vite`/`v`
+
+> [!NOTE]
+> You can also specify any vite template directly, e.g. `vue-ts`
 
 To use a template, run `localpen` with the `-t` flag:
 
