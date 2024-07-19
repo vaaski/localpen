@@ -37,7 +37,7 @@ const argv = minimist<{
 })
 
 if (argv.help) {
-	console.log(helpMessage)
+	console.log(await helpMessage())
 	process.exit(0)
 }
 
@@ -86,7 +86,7 @@ if (argv.template) {
 
 if (!template) {
 	console.log(red(bold(`Template ${black(argv.template ?? "")} not found`)))
-	console.log(`${helpMessage}`)
+	console.log(await helpMessage())
 	process.exit(1)
 }
 

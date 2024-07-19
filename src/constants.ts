@@ -1,4 +1,5 @@
 import { blue, bold, gray, magenta, yellow } from "kolorist"
+import { getViteTemplateVariantsColors } from "./create-vite"
 
 export type TemplateBuiltin = {
 	name: string
@@ -36,14 +37,28 @@ export const templates: Template[] = [
 		entry: ["bun", "run", "--watch", "index.js"],
 	},
 	{
-		name: "create-vite",
+		name: "Vite",
 		alias: "v",
 		color: magenta,
 		vite: true,
 	},
 ]
 
-export const helpMessage = `
+export const helpMessage = async () => {
+	const viteTemplateStrings = []
+	const viteVariants = await getViteTemplateVariantsColors()
+
+	for (const [name, data] of viteVariants) {
+		let variantString = data.color(name)
+
+		for (const [variant, color] of data.variants) {
+			if (variant === "TypeScript") variantString += ` (-${color("ts")})`
+		}
+
+		viteTemplateStrings.push(variantString)
+	}
+
+	return `
 Usage: localpen [options]
 
 ${gray("Options:")}
@@ -57,4 +72,8 @@ ${gray("Deletion options, pick either or get prompted:")}
 Available templates:
 ${templates
 	.map((t) => `  - ${t.color(t.name)}${t.alias ? `/${t.color(t.alias)}` : ""}`)
-	.join("\n")}`
+	.join("\n")}
+
+Vite templates:
+${viteTemplateStrings.map((t) => `  - ${t}`).join("\n")}`
+}

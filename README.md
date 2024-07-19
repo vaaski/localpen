@@ -46,7 +46,7 @@ Currently, there are three templates available:
 - `JavaScript`/`js`
 - `Vite`/`v`
 
-> [!NOTE]
+> [!TIP]
 > You can also specify any vite template directly, e.g. `vue-ts`
 
 To use a template, run `localpen` with the `-t` flag:
@@ -64,6 +64,6 @@ This prompt can be skipped by passing the `--keep` (`-k`) or the `--delete` (`-d
 ### Todo
 
 - [ ] ensure all the vite templates work
-- [ ] list the vite templates in the help message
+- [x] list the vite templates in the help message
 
 [bun]: https://bun.sh

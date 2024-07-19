@@ -10,7 +10,7 @@ import prompts from "prompts"
 const __dirname = dirname(fileURLToPath(import.meta.url))
 export const VITE_TEMPLATES_FOLDER = join(__dirname, "../templates/vite")
 
-const COLOR_STARTS_WITH = Object.entries({
+export const VITE_COLOR_STARTS_WITH = Object.entries({
 	vanilla: colors.yellow,
 	vue: colors.green,
 	react: colors.cyan,
@@ -35,7 +35,7 @@ export const getViteTemplateVariantsColors = async (): Promise<
 	const map: ViteTemplateMap = {}
 
 	for (const viteTemplate of contents) {
-		const colorMatch = COLOR_STARTS_WITH.find(([color]) =>
+		const colorMatch = VITE_COLOR_STARTS_WITH.find(([color]) =>
 			viteTemplate.startsWith(color),
 		)
 		const color = colorMatch ? colorMatch[1] : colors.gray
