@@ -36,7 +36,6 @@ for (const item of templates) {
 	const newName = item.replace("template-", "")
 	const newPath = join(OUTPUT_FOLDER, newName)
 
-	console.log({ path, item, newName, newPath })
 	await rename(path, newPath)
 }
 
